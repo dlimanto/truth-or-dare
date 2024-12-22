@@ -171,15 +171,15 @@ export class BoardPage implements OnDestroy {
           ref(this.db, 'gameStates'), 
           {
             isShuffling: false,
-            selectedCard: this.getRandomNumber()
+            selectedCard: this.getRandomNumber(101)
           }
         );
-      }, 1000);
+      }, this.getRandomNumber(5000));
     });
   }
 
-  protected getRandomNumber(): number {
-    return Math.floor(Math.random() * 101); // Generates a number between 0 and 100
+  protected getRandomNumber(max: number): number{
+    return Math.floor(Math.random() * max); // Generates a number between 0 and 100
   }
 
   protected getDeviceID(): string{
