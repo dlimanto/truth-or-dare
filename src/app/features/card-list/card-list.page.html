@@ -1,0 +1,25 @@
+<div class="bg-slate-800 p-5 flex-shrink-0 flex gap-4 rounded-lg m-auto overflow-y-auto w-full max-w-lg">
+    <div class="flex flex-col gap-0.5 rounded-md bg-red-400/10 px-3 py-2 text-sm font-semibold text-red-400 ring-1 ring-red-400/20 flex-1">
+        <div>DARE</div>
+        <div>{{ count['DARE'] }}</div>
+    </div>
+
+    <div class="flex flex-col gap-0.5 rounded-md bg-sky-400/10 px-3 py-2 text-sm font-semibold text-sky-400 ring-1 ring-sky-400/20 flex-1">
+        <div>TRUTH</div>
+        <div>{{ count['TRUTH'] }}</div>
+    </div>
+</div>
+
+<div class="flex-grow overflow-y-auto flex flex-col gap-6 rounded-xl w-full max-w-lg mx-auto">
+    @for (c of cards(); track $index) {
+        <div class="bg-slate-800 p-5 flex-shrink-0 rounded-lg m-auto overflow-y-auto w-full max-w-lg">
+            <div class="flex items-center rounded-md bg-{{ color[c.type] }}-400/10 px-4 py-1 text-sm font-semibold text-{{ color[c.type] }}-400 ring-1 ring-{{ color[c.type] }}-400/20 w-fit">
+                {{ c.type }}
+            </div>
+    
+            <div class="font-medium mt-4">
+                {{ c.label }}
+            </div>
+        </div>
+    }
+</div>

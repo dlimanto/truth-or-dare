@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/cdk/overlay-prebuilt.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+cdk-dialog-container > :first-child, .cdk-overlay-pane > :first-child:not(.select-options) {
+    @apply block size-full md:rounded-xl fade-in bg-slate-800 border border-[#FFFFFF1F]
+}
+.cdk-dialog-container {
+    outline: none;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+  
+.fade-in {
+    animation: fadeIn .3s ease-out;
+}

@@ -1,0 +1,63 @@
+.card {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url('/card.webp');
+
+    @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+            z-index: 11 - $i;
+            transform: translateX(#{-50 - ($i - 1)}#{"%"});
+        }
+    }
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+    }
+    75% {
+        opacity: .75;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes reveal {
+    0% {
+        z-index: 1000;
+        transform: scale(1) translateX(-45.5%);
+    }
+    10% {
+        z-index: 1000;
+        transform: scale(1.1) translateX(-45.5%);
+    }
+    12% {
+        z-index: 1000;
+        border: 0;
+        transform: scale(1.1) translateX(-45.5%) rotateY(10deg);
+    }
+    50% {
+        z-index: 1000;
+        border: 0;
+        transform: scale(1.1) translateX(-45.5%) rotateY(180deg);
+    }
+    75% {
+        z-index: 1000;
+        background: white;
+        border: 0;
+        transform: scale(1.1) translateX(-45.5%) rotateY(270deg);
+    }
+    100% {
+        z-index: 1000;
+        background: white;
+        border: 0;
+        transform: scale(1.1) translateX(-45.5%) rotateY(360deg);
+    }
+}
+
+.reveal {
+    animation: reveal 1s ease-in-out forwards;
+}
+.card-content {
+    animation: show 1s ease-in-out forwards;
+}

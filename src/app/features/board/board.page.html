@@ -1,0 +1,55 @@
+<div class="bg-slate-800 p-5 lg:p-10 rounded-lg m-auto size-full max-w-5xl flex flex-col gap-5 lg:gap-10">
+    <div class="flex-shrink-0 text-white text-xl lg:text-2xl font-bold">
+        Turn: {{ playerTurn() }}
+    </div>
+
+    <div class="flex-grow flex items-center">
+        <div 
+            class="lg:h-full aspect-[5/7] w-full lg:aspect-auto relative my-auto"
+        >
+            @for (i of [1,2,3,4,5,6,7,8,9,10]; track $index) {
+                @let isShowing = selectedCard() !== null && firstCardIndex == $index;
+                
+                <div 
+                    class="card border border-slate-200 lg:h-full lg:w-auto w-10/12 aspect-[5/7] rounded-2xl absolute top-0 user-select-none transition-all left-2/4"
+                    [class.reveal]="isShowing"
+                    #card
+                >
+                    @if (isShowing) {
+                        <div 
+                            class="size-full border-8 {{ selectedCard()!.type === 'TRUTH'? 'border-sky-700' : 'border-rose-700' }} rounded-xl card-content p-4 lg:p-6 flex flex-col gap-4 lg:gap-6"
+                        >
+                            <div 
+                                class="flex-shrink text-2xl lg:text-4xl font-mono font-bold {{ selectedCard()!.type === 'TRUTH'? 'text-sky-700' : 'text-rose-700' }}"
+                            >
+                                {{ selectedCard()!.type }}
+                            </div>
+
+                            <div class="flex-grow flex items-center">
+                                <h3 class="lg:text-2xl text-black text-center flex-grow font-semibold">
+                                    {{ selectedCard()!.label }}
+                                </h3>
+                            </div>
+
+                            <div 
+                                class="flex-shrink text-2xl lg:text-4xl text-end font-mono font-bold {{ selectedCard()!.type === 'TRUTH'? 'text-sky-700' : 'text-rose-700' }}"
+                            >
+                                {{ selectedCard()!.type }}
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="flex-shrink-0">
+        <button
+            class="block outline-none rounded-lg w-full text-center lg:text-xl px-3 py-2 lg:px-6 lg:py-3 bg-sky-500 active:hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-60 transition-all text-white"
+            [disabled]="isShuffling()"
+            (click)="pick()"
+        >
+            Pick a Card
+        </button>
+    </div>
+</div>
