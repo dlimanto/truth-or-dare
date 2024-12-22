@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.0.5",
     "@angular/cdk": "^19.0.4",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
@@ -23,8 +22,7 @@
     "@ng-icons/core": "^29.10.0",
     "@ng-icons/ionicons": "^29.10.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.1",
