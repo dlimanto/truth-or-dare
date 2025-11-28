@@ -19,10 +19,13 @@ export class BoardPage implements OnDestroy {
   public readonly cards: Signal<readonly ElementRef<HTMLElement>[]> = viewChildren('card');
   public readonly selectedCard: WritableSignal<{ type: string, label: string } | null> = signal(null);
   public firstCardIndex: number = 0;
+  
   protected readonly db!: Database;
   protected readonly subs!: Unsubscribe[];
   protected readonly players: Map<string, string> = new Map();
   protected readonly cardsMap: Map<string, { type: string, label: string }> = new Map();
+  
+  protected withAlcohol: boolean = false;
   protected interval?: ReturnType<typeof setInterval>;
 
   constructor(
@@ -66,9 +69,11 @@ export class BoardPage implements OnDestroy {
             return;
           }
 
-          Object.keys(snapshot.val()).forEach((k) => {
-            this.cardsMap.set(k, snapshot.val()[k]);
-          });
+          Object.keys(snapshot.val()).forEach(
+            (k) => {
+              this.cardsMap.set(k, snapshot.val()[k]);
+            }
+          );
         }
       ),
 
@@ -80,9 +85,22 @@ export class BoardPage implements OnDestroy {
             return;
           }
 
-          Object.keys(snapshot.val()).forEach((k) => {
-            this.players.set(k, snapshot.val()[k].name);
-          });
+          Object.keys(snapshot.val()).forEach(
+            (k) => {
+              this.players.set(k, snapshot.val()[k].name);
+            }
+          );
+        }
+      ),
+
+      // Handle With Alcohol
+      onValue(
+        ref(this.db, 'gameStates/withAlcohol'),
+        (snapshot: DataSnapshot) => {
+          if (!snapshot.exists()) {
+            return;
+          }
+          this.withAlcohol = snapshot.val();
         }
       ),
 
@@ -94,11 +112,19 @@ export class BoardPage implements OnDestroy {
             return;
           }
 
-          setTimeout(() => {
-            this.selectedCard.set(
-              snapshot.val() === -1 ? null : (this.cardsMap.get(snapshot.val().toString()) || null)
-            );  
-          }, 200);
+          setTimeout(
+            () => {
+              if (snapshot.val() === -2) {
+                this.selectedCard.set({ type: 'DARE', label: 'Drink' });
+                return;
+              }
+              
+              this.selectedCard.set(
+                snapshot.val() === -1? null : (this.cardsMap.get(snapshot.val().toString()) || null)
+              );  
+            }, 
+            200
+          );
         }
       ),
 
@@ -117,33 +143,42 @@ export class BoardPage implements OnDestroy {
           }
 
           let index = 0;
-          this.cards().forEach((c, i) => {
-            c.nativeElement.style.zIndex = (999 - i).toString();
-            c.nativeElement.style.transform = `translateX(-${ 50 + i }%)`;
-          });
-          this.interval = setInterval(() => {
-            const i = index % 10;
-            const card = this.cards()[i];
-            const prevZ = card.nativeElement.style.zIndex;
-
-            card.nativeElement.style.transform = 'translateX(10%)';
-            setTimeout(() => {
-              card.nativeElement.style.transform = `translateX(-59%)`;
-              card.nativeElement.style.zIndex = (+(prevZ || 999) - 10).toString();
-            }, 300);
-
-            for (let j = 0; j < this.cards().length; j++) {
-              if (i === j) continue;
-
-              const x = +this.cards()[j].nativeElement.style.transform.split('(')[1].split('%')[0];
-              this.cards()[j].nativeElement.style.transform = `translateX(${ x + 1 }%)`;
-
-              if (x === -50) {
-                this.firstCardIndex = j;
-              }
+          this.cards().forEach(
+            (c, i) => {
+              c.nativeElement.style.zIndex = (999 - i).toString();
+              c.nativeElement.style.transform = `translateX(-${ 50 + i }%)`;
             }
-            index++;
-          }, 500);
+          );
+          
+          this.interval = setInterval(
+            () => {
+              const i = index % 10;
+              const card = this.cards()[i];
+              const prevZ = card.nativeElement.style.zIndex;
+
+              card.nativeElement.style.transform = 'translateX(10%)';
+              setTimeout(
+                () => {
+                  card.nativeElement.style.transform = `translateX(-59%)`;
+                  card.nativeElement.style.zIndex = (+(prevZ || 999) - 10).toString();
+                }, 
+                300
+              );
+
+              for (let j = 0; j < this.cards().length; j++) {
+                if (i === j) continue;
+
+                const x = +this.cards()[j].nativeElement.style.transform.split('(')[1].split('%')[0];
+                this.cards()[j].nativeElement.style.transform = `translateX(${ x + 1 }%)`;
+
+                if (x === -50) {
+                  this.firstCardIndex = j;
+                }
+              }
+              index++;
+            }, 
+            500
+          );
         }
       )
     ];
@@ -165,17 +200,28 @@ export class BoardPage implements OnDestroy {
         turn: this.getDeviceID() 
       }
     )
-    .then(() => {
-      setTimeout(() => {
-        update(
-          ref(this.db, 'gameStates'), 
-          {
-            isShuffling: false,
-            selectedCard: this.getRandomNumber(101)
-          }
+    .then(
+      () => {
+        setTimeout(
+          () => {
+            let isCard = 1;
+
+            if (this.withAlcohol) {
+              isCard = this.getRandomNumber(101);
+            }
+
+            update(
+              ref(this.db, 'gameStates'), 
+              {
+                isShuffling: false,
+                selectedCard: isCard >= 30? this.getRandomNumber(100) : -2
+              }
+            );
+          }, 
+          this.getRandomNumber(5000)
         );
-      }, this.getRandomNumber(5000));
-    });
+      }
+    );
   }
 
   protected getRandomNumber(max: number): number{

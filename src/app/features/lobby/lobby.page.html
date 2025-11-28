@@ -28,4 +28,13 @@
             {{ isStarting()? 'Starting...' : 'Start' }}
         </button>
     }
+
+    <div class="flex items-center gap-2 mt-5 cursor-pointer">
+        <input 
+            id="drink" 
+            type="checkbox" 
+            class="peer dark:bg-input/30 border-input size-5 min-w-0 rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-border/40 relative cursor-pointer focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none checked:after:content-[''] checked:after:absolute checked:after:border-white checked:after:border-b-2 checked:after:border-r-2 checked:after:w-1.5 checked:after:h-2.5 checked:after:rounded-br-xs checked:after:rotate-45 checked:after:left-1.5 checked:after:top-0.75 appearance-none checked:border-sky-500 checked:bg-sky-500"
+        />
+        <label for="drink">With Alcohol</label>
+    </div>
 </div>

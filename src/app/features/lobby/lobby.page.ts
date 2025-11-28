@@ -33,7 +33,16 @@ export class LobbyPage implements OnDestroy {
 
   public start(): void{
     this.isStarting.set(true);
-    update(ref(this.db, 'gameStates'), { isPlaying: true, turn: this.getDeviceID(), selectedCard: -1 });
+    
+    update(
+      ref(this.db, 'gameStates'), 
+      { 
+        isPlaying: true, 
+        selectedCard: -1,
+        turn: this.getDeviceID(), 
+        withAlcohol: (document.getElementById('drink') as HTMLInputElement)?.checked?? false,
+      }
+    );
   }
 
   public join(n: string): void{
